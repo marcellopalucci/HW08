@@ -3,28 +3,40 @@ import java.util.NoSuchElementException;
 
 // TODO JAVADOC
 public class Line<T> implements List<T> {
-
-    private Person<T> firstPerson;
+    public Person<T> firstPerson;
     private int size;
 
     // TODO JAVADOC
     public Line(T[] parcel) {
-        // FIXME
+        for (int i = 0; i < parcel.length; i++) {
+            add(parcel[i]);
+        }
     }
 
-    // TODO JAVADOC
+    /**
+     * Create an empty list
+     */
     public Line() {
-        // FIXME
     }
 
-    // TODO JAVADOC
+    /**
+     * Returns the first person in the line
+     * @return Person<T> representing the first person in line
+     */
     public Person<T> getFirstPerson() {
+        if (size == 0) return null;
         return firstPerson;
     }
 
     // TODO JAVADOC
     public T[] toArray() {
-        return null; // FIXME
+        T[] arr = (T[]) new Object[size];
+        Iterator<T> itr = this.iterator();
+        int i = 0;
+        while (itr.hasNext()) {
+            arr[i++] = itr.next();
+        }
+        return arr;
     }
 
     @Override
@@ -53,12 +65,34 @@ public class Line<T> implements List<T> {
 
     @Override
     public void add(T element) throws IllegalArgumentException {
-        // FIXME
+        // addFirst (24.4.3.1)
+        Person<T> newPerson = new Person<>(element);
+        newPerson.nextPerson = firstPerson;
+        firstPerson = newPerson;
+        size++;
     }
 
     @Override
     public void add(int index, T element) throws IndexOutOfBoundsException, IllegalArgumentException {
-        // FIXME
+        //24.4.3.3
+        //if index == 0 then add to head
+        T[] beforeArray = toArray();
+        if (index == 0) {
+            add(element);
+        } else {
+            Person<T> current = firstPerson;
+            for (int i = 1; i < index; i++) {
+                current = current.getNextPerson();
+            }
+
+            Person<T> temp = current.getNextPerson();
+            Person<T> personToAdd = new Person<>(element, current.getNextPerson());
+            temp.setNextPerson(element, current.getNextPerson());
+            current.setNextPerson(new Person<>(element, current.getNextPerson()));
+            current = temp;
+        }
+        size ++;
+        T[] afterArray = toArray();
     }
 
     @Override
@@ -98,21 +132,22 @@ public class Line<T> implements List<T> {
 
     @Override
     public boolean isEmpty() {
-        return false; // FIXME
+        return (size == 0);
     }
 
     @Override
     public int size() {
-        return 0; // FIXME
+        return size;
     }
 
     @Override
     public Iterator<T> iterator() {
-        return null; // FIXME
+        return new LineIterator(this);
     }
 
     // TODO JAVADOC
     public void reverse() {
         // FIXME
     }
+
 }

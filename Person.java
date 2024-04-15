@@ -1,7 +1,7 @@
 public class Person<T>{
     T parcel;
-    T nextPerson;
-    public Person(T parcel, T nextPerson) {
+    Person nextPerson;
+    public Person(T parcel, Person nextPerson) throws IllegalArgumentException {
         if (parcel == null) {
             throw new IllegalArgumentException("Parcel is set to null and shouldn't be.");
         }
@@ -18,11 +18,11 @@ public class Person<T>{
         this.parcel = parcel;
     }
 
-    public T getNextPerson() {
+    public Person getNextPerson() {
         return nextPerson;
     }
 
-    public void setNextPerson(T nextPerson) {
+    public void setNextPerson(Person nextPerson) {
         this.nextPerson = nextPerson;
     }
 }
