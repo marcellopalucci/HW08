@@ -3,7 +3,7 @@ import java.util.NoSuchElementException;
 
 // TODO JAVADOC
 public class Line<T> implements List<T> {
-    public Person<T> firstPerson;
+    private Person<T> firstPerson;
     private int size;
 
     // TODO JAVADOC
@@ -83,7 +83,8 @@ public class Line<T> implements List<T> {
     public void add(int index, T element) throws IndexOutOfBoundsException, IllegalArgumentException {
         //24.4.3.3
         //if index == 0 then add to head
-        T[] beforeArray = toArray();
+        if (index > size) throw new IndexOutOfBoundsException("Index cannot exceed size");
+        if (element == null) throw new IllegalArgumentException("Illegal argument, element");
         if (index == 0) {
             add(element);
         } else {
@@ -94,27 +95,50 @@ public class Line<T> implements List<T> {
 
             Person<T> temp = current.getNextPerson();
             Person<T> personToAdd = new Person<>(element, current.getNextPerson());
-            temp.setNextPerson(element, current.getNextPerson());
-            current.setNextPerson(new Person<>(element, current.getNextPerson()));
-            current = temp;
+            current.setNextPerson(personToAdd);
         }
         size ++;
-        T[] afterArray = toArray();
     }
 
     @Override
     public T remove() throws NoSuchElementException {
-        return null; // FIXME
+        if (size == 0) return null;
+        //throw new NoSuchElementException("Element was not found");
+        else {
+            Person<T> temp = firstPerson;
+            firstPerson = firstPerson.getNextPerson();
+            size--;
+            return temp.getParcel();
+        }
     }
 
     @Override
     public T remove(int index) throws NoSuchElementException, IndexOutOfBoundsException {
-        return null; // FIXME
+        if (index >= size || index < 0) throw new IndexOutOfBoundsException("Cannot remove at this index");
+        else if (index == 0) return remove();
+        else {
+            Person<T> previous = firstPerson;
+            for (int i = 1; i < index; i++) {
+                previous = previous.getNextPerson();
+            }
+            Person<T> current = previous.getNextPerson();
+            previous.setNextPerson(current.getNextPerson());
+            size --;
+            return current.getParcel();
+        }
+       // throw new NoSuchElementException("Element was not");
     }
 
     @Override
     public T remove(T element) throws IllegalArgumentException, NoSuchElementException {
-        return null; // FIXME
+        Person<T> current = firstPerson;
+        for (int i = 0; i < size; i++) {
+            if (current.getParcel().equals(element)) {
+                return remove(i);
+            }
+            current = current.nextPerson;
+        }
+        return null;
     }
 
     @Override
@@ -124,7 +148,11 @@ public class Line<T> implements List<T> {
 
     @Override
     public T get(int index) throws IndexOutOfBoundsException {
-        return null; // FIXME
+        Person<T> current = getFirstPerson();
+        for (int i = 0; i < index; i++) {
+            current = current.getNextPerson();
+        }
+        return current.getParcel();
     }
 
     @Override
