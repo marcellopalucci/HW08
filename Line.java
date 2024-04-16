@@ -30,6 +30,10 @@ public class Line<T> implements List<T> {
         firstPerson = null;
     }
 
+    /**
+     * Getter that returns the firstPerson in line.
+     * @return Person representing the first person in line
+     */
     public Person<T> getFirstPerson() {
         return firstPerson;
     }
@@ -76,6 +80,9 @@ public class Line<T> implements List<T> {
     @Override
     public void add(T element) throws IllegalArgumentException {
         // addFirst (24.4.3.1)
+        if (element == null) {
+            throw new IllegalArgumentException("Cannot add null parcel. Error 1");
+        }
         if (firstPerson == null) {
             firstPerson = new Person<>(element);
             size++;
@@ -93,8 +100,8 @@ public class Line<T> implements List<T> {
     @Override
     public void add(int index, T element) throws IndexOutOfBoundsException, IllegalArgumentException {
         //24.4.3.3
-        if (index > size) throw new IndexOutOfBoundsException("Index cannot exceed size");
-        if (element == null) throw new IllegalArgumentException("Illegal argument, element");
+        if (isValidIndex(index)) throw new IndexOutOfBoundsException("Invalid index. Error 2");
+        if (element == null) throw new IllegalArgumentException("Cannot add null parcel. Error 3");
         Person<T> personToAdd;
         if (index == 0) {
             personToAdd = new Person<>(element, firstPerson);
@@ -115,8 +122,7 @@ public class Line<T> implements List<T> {
 
     @Override
     public T remove() throws NoSuchElementException {
-        if (size == 0) return null;
-        //throw new NoSuchElementException("Element was not found");
+        if (size == 0) throw new NoSuchElementException("Cannot remove parcel from 0 size line. Error 4");
         else {
             Person<T> temp = firstPerson.getNextPerson();
             firstPerson = temp;
@@ -127,7 +133,12 @@ public class Line<T> implements List<T> {
 
     @Override
     public T remove(int index) throws NoSuchElementException, IndexOutOfBoundsException {
-        if (index >= size || index < 0) throw new IndexOutOfBoundsException("Cannot remove at this index");
+        if (isValidIndex(index)) {
+            if (size == 0) {
+                throw new NoSuchElementException("Size is zero, and index is invalid. Error 5");
+            }
+            throw new IndexOutOfBoundsException("Invalid index. Error 6");
+        }
         else if (index == 0) return remove();
         else {
             Person<T> previous = firstPerson;
@@ -139,11 +150,13 @@ public class Line<T> implements List<T> {
             size --;
             return current.getParcel();
         }
-       // throw new NoSuchElementException("Element was not");
     }
 
     @Override
     public T remove(T element) throws IllegalArgumentException, NoSuchElementException {
+        if (element == null) {
+            throw new IllegalArgumentException("Parcel cannot be null. Error 7");
+        }
         Person<T> current = firstPerson;
         for (int i = 0; i < size; i++) {
             if (current.getParcel().equals(element)) {
@@ -151,11 +164,19 @@ public class Line<T> implements List<T> {
             }
             current = current.getNextPerson();
         }
-        return null;
+        throw new NoSuchElementException("Parcel is not in this line! Error 8");
     }
 
     @Override
     public T set(int index, T element) throws IndexOutOfBoundsException, IllegalArgumentException {
+        if (element == null) {
+            if (isValidIndex(index)) {
+                throw new IndexOutOfBoundsException("Invalid index, and element. Error 9");
+            }
+            throw new IllegalArgumentException("Parcel cannot be null. Error 10");
+        } else if (isValidIndex(index)) {
+            throw new IndexOutOfBoundsException("Invalid index. Error 11");
+        }
         Person<T> previousPerson = firstPerson;
         Person<T> setPerson;
         if (index == 0) {
@@ -173,20 +194,26 @@ public class Line<T> implements List<T> {
 
     @Override
     public T get(int index) throws IndexOutOfBoundsException {
+        if (isValidIndex(index)) throw new IndexOutOfBoundsException("Invalid index called. Error 12");
+
+        Iterator<T> itr = this.iterator();
         Person<T> current = firstPerson;
-        for (int i = 0; i < index; i++) {
-            current = current.getNextPerson();
+        int counter = 0;
+        while (itr.hasNext()) {
+            if (counter == index) break;
+            else itr.next();
+            counter++;
+
         }
-        return current.getParcel();
+        return itr.next();
     }
 
     @Override
     public boolean contains(T element) throws IllegalArgumentException {
-        Person<T> current = firstPerson;
+        if (element == null) throw new IllegalArgumentException("Parcel cannot be null. Error 13");
         Iterator<T> itr = this.iterator();
         while(itr.hasNext()) {
             if(itr.next().equals(element)) return true;
-
         }
         return false;
     }
@@ -195,7 +222,6 @@ public class Line<T> implements List<T> {
     public void clear() {
         size = 0;
         firstPerson = null;
-
     }
 
     @Override
@@ -218,6 +244,9 @@ public class Line<T> implements List<T> {
      */
     public void reverse() {
         // FIXME
+    }
+    private boolean isValidIndex(int index) {
+        return (index < 0 || index >= size);
     }
 
 }
