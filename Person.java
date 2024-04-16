@@ -1,6 +1,6 @@
 public class Person<T>{
-    T parcel;
-    Person nextPerson;
+    private T parcel;
+    private Person nextPerson;
     public Person(T parcel, Person nextPerson) throws IllegalArgumentException {
         if (parcel == null) {
             throw new IllegalArgumentException("Parcel is set to null and shouldn't be.");

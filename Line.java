@@ -1,36 +1,44 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-// TODO JAVADOC
+/**
+ * Generic class that represents a line. A Line is comprised of
+ * Person instances that are linked together. This class implements
+ * all the methods required by the provided List interface. It uses the
+ * Person and LineIterator classes to satisfy the requirements.
+ * @param <T> represents the type of parcel that persons in this line carry
+ */
 public class Line<T> implements List<T> {
     private Person<T> firstPerson;
     private int size;
 
-    // TODO JAVADOC
+    /**
+     * Constructor that takes in an array of parcels to type T.
+     * @param parcel T representing the parcel in line
+     */
     public Line(T[] parcel) {
         firstPerson = new Person<>(parcel[0]);
-        for (int i = 0; i < parcel.length; i++) {
-            add(parcel[i]);
+        for (T t : parcel) {
+            add(t);
         }
     }
 
     /**
-     * Create an empty list
+     * Constructor that creates an empty list.
      */
     public Line() {
         firstPerson = null;
     }
 
-    /**
-     * Returns the first person in the line
-     * @return Person<T> representing the first person in line
-     */
     public Person<T> getFirstPerson() {
-        if (size == 0) return null;
         return firstPerson;
     }
 
-    // TODO JAVADOC
+    /**
+     * Returns the parcel that each person carries in an array.
+     * @return an array of type T representing the parcel that each person
+     * carries in this line.
+     */
     public T[] toArray() {
         T[] arr = (T[]) new Object[size];
         Iterator<T> itr = this.iterator();
@@ -73,28 +81,33 @@ public class Line<T> implements List<T> {
             size++;
             return;
         }
+        Person<T> current = firstPerson;
+        while (current.getNextPerson() != null) {
+            current = current.getNextPerson();
+        }
         Person<T> newPerson = new Person<>(element);
-        newPerson.nextPerson = firstPerson;
-        firstPerson = newPerson;
+        current.setNextPerson(newPerson);
         size++;
     }
 
     @Override
     public void add(int index, T element) throws IndexOutOfBoundsException, IllegalArgumentException {
         //24.4.3.3
-        //if index == 0 then add to head
         if (index > size) throw new IndexOutOfBoundsException("Index cannot exceed size");
         if (element == null) throw new IllegalArgumentException("Illegal argument, element");
+        Person<T> personToAdd;
         if (index == 0) {
-            add(element);
+            personToAdd = new Person<>(element, firstPerson);
+            firstPerson = personToAdd;
+            size++;
+            return;
         } else {
             Person<T> current = firstPerson;
             for (int i = 1; i < index; i++) {
                 current = current.getNextPerson();
             }
-
             Person<T> temp = current.getNextPerson();
-            Person<T> personToAdd = new Person<>(element, current.getNextPerson());
+            personToAdd = new Person<>(element, temp);
             current.setNextPerson(personToAdd);
         }
         size ++;
@@ -105,8 +118,8 @@ public class Line<T> implements List<T> {
         if (size == 0) return null;
         //throw new NoSuchElementException("Element was not found");
         else {
-            Person<T> temp = firstPerson;
-            firstPerson = firstPerson.getNextPerson();
+            Person<T> temp = firstPerson.getNextPerson();
+            firstPerson = temp;
             size--;
             return temp.getParcel();
         }
@@ -136,19 +149,31 @@ public class Line<T> implements List<T> {
             if (current.getParcel().equals(element)) {
                 return remove(i);
             }
-            current = current.nextPerson;
+            current = current.getNextPerson();
         }
         return null;
     }
 
     @Override
     public T set(int index, T element) throws IndexOutOfBoundsException, IllegalArgumentException {
-        return null; // FIXME
+        Person<T> previousPerson = firstPerson;
+        Person<T> setPerson;
+        if (index == 0) {
+            setPerson = new Person<>(element, firstPerson.getNextPerson());
+            firstPerson = setPerson;
+        }
+        for (int i = 1; i < index; i++) {
+            previousPerson = previousPerson.getNextPerson();
+        }
+        Person<T> nextPerson = previousPerson.getNextPerson();
+        setPerson = new Person<>(element, nextPerson.getNextPerson());
+        previousPerson.setNextPerson(setPerson);
+        return nextPerson.getParcel();
     }
 
     @Override
     public T get(int index) throws IndexOutOfBoundsException {
-        Person<T> current = getFirstPerson();
+        Person<T> current = firstPerson;
         for (int i = 0; i < index; i++) {
             current = current.getNextPerson();
         }
@@ -157,12 +182,20 @@ public class Line<T> implements List<T> {
 
     @Override
     public boolean contains(T element) throws IllegalArgumentException {
-        return false; // FIXME
+        Person<T> current = firstPerson;
+        Iterator<T> itr = this.iterator();
+        while(itr.hasNext()) {
+            if(itr.next().equals(element)) return true;
+
+        }
+        return false;
     }
 
     @Override
     public void clear() {
-        // FIXME
+        size = 0;
+        firstPerson = null;
+
     }
 
     @Override
@@ -180,7 +213,9 @@ public class Line<T> implements List<T> {
         return new LineIterator(this);
     }
 
-    // TODO JAVADOC
+    /**
+     * Recursively reverses the order of the Person instances in the Line.
+     */
     public void reverse() {
         // FIXME
     }

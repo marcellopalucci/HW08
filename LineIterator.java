@@ -14,8 +14,8 @@ public class LineIterator<T> implements Iterator<T> {
     }
     @Override
     public T next() {
-        T t = nextPerson.parcel;
-        nextPerson = (Person<T>) nextPerson.getNextPerson();
+        T t = nextPerson.getParcel();
+        nextPerson = nextPerson.getNextPerson();
         return t;
     }
 }
