@@ -85,7 +85,9 @@ public class Driver {
 //        contains passing null value
 //        line.contains(null);
 
-
+        System.out.println("Reverse:");
+        line.reverse();
+        System.out.println(line.toString());
 
 
 
