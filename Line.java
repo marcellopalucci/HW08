@@ -8,6 +8,7 @@ public class Line<T> implements List<T> {
 
     // TODO JAVADOC
     public Line(T[] parcel) {
+        firstPerson = new Person<>(parcel[0]);
         for (int i = 0; i < parcel.length; i++) {
             add(parcel[i]);
         }
@@ -17,6 +18,7 @@ public class Line<T> implements List<T> {
      * Create an empty list
      */
     public Line() {
+        firstPerson = null;
     }
 
     /**
@@ -66,6 +68,11 @@ public class Line<T> implements List<T> {
     @Override
     public void add(T element) throws IllegalArgumentException {
         // addFirst (24.4.3.1)
+        if (firstPerson == null) {
+            firstPerson = new Person<>(element);
+            size++;
+            return;
+        }
         Person<T> newPerson = new Person<>(element);
         newPerson.nextPerson = firstPerson;
         firstPerson = newPerson;
