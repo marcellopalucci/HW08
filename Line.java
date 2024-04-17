@@ -7,6 +7,8 @@ import java.util.NoSuchElementException;
  * all the methods required by the provided List interface. It uses the
  * Person and LineIterator classes to satisfy the requirements.
  * @param <T> represents the type of parcel that persons in this line carry
+ * @author mpalucci3
+ * @version 1.1
  */
 public class Line<T> implements List<T> {
     private Person<T> firstPerson;
@@ -100,8 +102,12 @@ public class Line<T> implements List<T> {
     @Override
     public void add(int index, T element) throws IndexOutOfBoundsException, IllegalArgumentException {
         //24.4.3.3
-        if (isValidIndex(index)) throw new IndexOutOfBoundsException("Invalid index. Error 2");
-        if (element == null) throw new IllegalArgumentException("Cannot add null parcel. Error 3");
+        if (index < 0 || index > size()) {
+            throw new IndexOutOfBoundsException("Invalid index. Error 2");
+        }
+        if (element == null) {
+            throw new IllegalArgumentException("Cannot add null parcel. Error 3");
+        }
         Person<T> personToAdd;
         if (index == 0) {
             personToAdd = new Person<>(element, firstPerson);
@@ -117,13 +123,14 @@ public class Line<T> implements List<T> {
             personToAdd = new Person<>(element, temp);
             current.setNextPerson(personToAdd);
         }
-        size ++;
+        size++;
     }
 
     @Override
     public T remove() throws NoSuchElementException {
-        if (size == 0) throw new NoSuchElementException("Cannot remove parcel from 0 size line. Error 4");
-        else {
+        if (isEmpty()) {
+            throw new NoSuchElementException("Cannot remove parcel from 0 size line. Error 4");
+        } else {
             Person<T> temp = firstPerson.getNextPerson();
             firstPerson = temp;
             size--;
@@ -134,20 +141,20 @@ public class Line<T> implements List<T> {
     @Override
     public T remove(int index) throws NoSuchElementException, IndexOutOfBoundsException {
         if (isValidIndex(index)) {
-            if (size == 0) {
+            if (isEmpty()) {
                 throw new NoSuchElementException("Size is zero, and index is invalid. Error 5");
             }
             throw new IndexOutOfBoundsException("Invalid index. Error 6");
-        }
-        else if (index == 0) return remove();
-        else {
+        } else if (index == 0) {
+            return remove();
+        } else {
             Person<T> previous = firstPerson;
             for (int i = 1; i < index; i++) {
                 previous = previous.getNextPerson();
             }
             Person<T> current = previous.getNextPerson();
             previous.setNextPerson(current.getNextPerson());
-            size --;
+            size--;
             return current.getParcel();
         }
     }
@@ -194,14 +201,19 @@ public class Line<T> implements List<T> {
 
     @Override
     public T get(int index) throws IndexOutOfBoundsException {
-        if (isValidIndex(index)) throw new IndexOutOfBoundsException("Invalid index called. Error 12");
+        if (isValidIndex(index)) {
+            throw new IndexOutOfBoundsException("Invalid index called. Error 12");
+        }
 
         Iterator<T> itr = this.iterator();
         Person<T> current = firstPerson;
         int counter = 0;
         while (itr.hasNext()) {
-            if (counter == index) break;
-            else itr.next();
+            if (counter == index) {
+                break;
+            } else {
+                itr.next();
+            }
             counter++;
         }
         return itr.next();
@@ -209,10 +221,14 @@ public class Line<T> implements List<T> {
 
     @Override
     public boolean contains(T element) throws IllegalArgumentException {
-        if (element == null) throw new IllegalArgumentException("Parcel cannot be null. Error 13");
+        if (element == null) {
+            throw new IllegalArgumentException("Parcel cannot be null. Error 13");
+        }
         Iterator<T> itr = this.iterator();
-        while(itr.hasNext()) {
-            if(itr.next().equals(element)) return true;
+        while (itr.hasNext()) {
+            if (itr.next().equals(element)) {
+                return true;
+            }
         }
         return false;
     }
@@ -249,7 +265,6 @@ public class Line<T> implements List<T> {
             firstPerson = current;
             return;
         }
-
         revRecursion(current.getNextPerson());
         Person<T> next = current.getNextPerson();
         next.setNextPerson(current);
