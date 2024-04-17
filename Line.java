@@ -242,41 +242,20 @@ public class Line<T> implements List<T> {
      * Recursively reverses the order of the Person instances in the Line.
      */
     public void reverse() {
-        reverseRecursion(0);
+        revRecursion(firstPerson);
     }
-    private void reverseRecursion(int counter) {
-        if (counter / 2 == size / 2) return;
-        Person<T> head = getHead(counter);
-        Person<T> tail = getTail(counter);
-        Person<T> temp = head;
-        head.setNextPerson(tail.getNextPerson());
-        head.setParcel(tail.getParcel());
-        tail.setNextPerson(temp.getNextPerson());
-        tail.setParcel(temp.getParcel());
-
-
-        temp = null;
-        reverseRecursion(++counter);
-    }
-    private void revRecursion(Person<T> current, Person<T> prev) {
-
-    }
-    private Person<T> getHead(int index) {
-        Person<T> head = firstPerson;
-        for (int i = 0; i < index; i++) {
-            head = head.getNextPerson();
+    private void revRecursion(Person<T> current) {
+        if (current.getNextPerson() == null) {
+            firstPerson = current;
+            return;
         }
-        return head;
-    }
-    private Person<T> getTail(int index) {
-        Person<T> tail = firstPerson;
-        for (int i = 0; i < size - index - 1; i ++) {
-            tail = tail.getNextPerson();
-        }
-        return tail;
+
+        revRecursion(current.getNextPerson());
+        Person<T> next = current.getNextPerson();
+        next.setNextPerson(current);
+        current.setNextPerson(null);
     }
     private boolean isValidIndex(int index) {
         return (index < 0 || index >= size);
     }
-
 }
