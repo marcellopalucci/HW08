@@ -13,7 +13,7 @@ public class LineIterator<T> implements Iterator<T> {
      * Constructor which takes in a Line and sets the next person.
      * @param line Line representing the list of people in line
      */
-    public LineIterator(Line line) {
+    public LineIterator(Line<T> line) {
         if (line == null) {
             throw new IllegalArgumentException();
         }

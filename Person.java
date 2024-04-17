@@ -7,7 +7,7 @@
  */
 public class Person<T> {
     private T parcel;
-    private Person nextPerson;
+    private Person<T> nextPerson;
 
     /**
      * Constructor taking in a parcel and the next person in line.
@@ -15,7 +15,7 @@ public class Person<T> {
      * @param nextPerson Person holding a reference to the next person line
      * @throws IllegalArgumentException exception thrown if the parcel passed in is null
      */
-    public Person(T parcel, Person nextPerson) throws IllegalArgumentException {
+    public Person(T parcel, Person<T> nextPerson) throws IllegalArgumentException {
         if (parcel == null) {
             throw new IllegalArgumentException("Parcel is set to null and shouldn't be.");
         }
@@ -51,7 +51,7 @@ public class Person<T> {
      * Getter method, returning the next person in line.
      * @return Person holding a reference to the next person line
      */
-    public Person getNextPerson() {
+    public Person<T> getNextPerson() {
         return nextPerson;
     }
 
@@ -59,7 +59,7 @@ public class Person<T> {
      * Setter method, setting the next person in line.
      * @param nextPerson Person holding a reference to the next person line
      */
-    public void setNextPerson(Person nextPerson) {
+    public void setNextPerson(Person<T> nextPerson) {
         this.nextPerson = nextPerson;
     }
 }

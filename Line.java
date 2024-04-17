@@ -251,7 +251,7 @@ public class Line<T> implements List<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new LineIterator(this);
+        return new LineIterator<T>(this);
     }
 
     /**
